@@ -46,25 +46,26 @@ export default {
     handleChange(e) {
       this.isGenRiseTime = e.target.value;
     },
-    genaratorText(today, isGenRiseTime) {
+    generatorText(today, isGenRiseTime) {
       const now = new Date();
       const date = dateFormat(today, 'YYYY.MM.DD EEE');
-      const lost = (today - this.lostDay) / 1000 / 3600 / 24;
+      const lost = Math.floor((today - this.lostDay) / 1000 / 3600 / 24);
       const currentTime = isGenRiseTime ? `${now.getHours()}:${now.getMinutes()} ` : '';
       return `${date} ${lost}\n起床时间: ${currentTime}\n\n`;
     },
     getCurrentDiary() {
-      let startTime = new Date(this.start);
-
+      let startTime = this.start ? new Date(this.start) : new Date();
+      console.log('start', this.start);
+      console.log('startTime', startTime);
       let text = '';
       if (this.end) {
         const endTime = new Date(this.end);
         while (endTime >= startTime) {
-          text += this.genaratorText(endTime);
+          text += this.generatorText(endTime);
           endTime.setDate(endTime.getDate() - 1);
         }
       } else {
-        text = this.genaratorText(startTime, this.isGenRiseTime);
+        text = this.generatorText(startTime, this.isGenRiseTime);
       }
 
       wx.setClipboardData({
